@@ -43,9 +43,9 @@ function FormOrcamento() {
     });
 
     try {
-      const response = await fetch('http://localhost:8000/orcamento', {
-        method: 'POST',
-        body: formDataToSend,
+      const response = await fetch('https://backend-laravel-orcamento-veiculos.onrender.com', {
+      method: 'POST',
+      body: formDataToSend,
       });
 
       if (!response.ok) {
