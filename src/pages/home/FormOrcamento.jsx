@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Banner from './banner/Banner';
 import './banner/home.css';
 
-function Home() {
+function FormOrcamento() {
   const [formData, setFormData] = useState({
     nome: '',
     whatsapp: '',
@@ -75,7 +75,6 @@ function Home() {
 
   return (
     <div>
-      <Banner />
       <div className="form-container">
         <h2>Solicite seu Orçamento</h2>
         <form onSubmit={handleSubmit}>
@@ -146,4 +145,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default FormOrcamento;
