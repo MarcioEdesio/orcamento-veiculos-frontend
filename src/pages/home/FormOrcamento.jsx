@@ -43,10 +43,11 @@ function FormOrcamento() {
     });
 
     try {
-      const response = await fetch('https://backend-laravel-orcamento-veiculos.onrender.com', {
+      const response = await fetch('https://backend-laravel-orcamento-veiculos.onrender.com/orcamento', {
       method: 'POST',
       body: formDataToSend,
-      });
+     });
+
 
       if (!response.ok) {
         const text = await response.text();
