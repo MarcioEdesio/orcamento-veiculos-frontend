@@ -9,76 +9,36 @@ function FormOrcamento() {
     marca: '',
     modelo: '',
     ano: '',
-    fotos: []
   });
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [fotosCount, setFotosCount] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleFileChange = (e) => {
-    const filesArray = Array.from(e.target.files);
-    setFormData(prev => ({
-      ...prev,
-      fotos: filesArray
-    }));
+    setFotosCount(e.target.files.length);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    const formDataToSend = new FormData();
-    formDataToSend.append('nome', formData.nome);
-    formDataToSend.append('whatsapp', formData.whatsapp);
-    formDataToSend.append('marca', formData.marca);
-    formDataToSend.append('modelo', formData.modelo);
-    formDataToSend.append('ano', formData.ano);
-
-    formData.fotos.forEach((foto) => {
-      formDataToSend.append('fotos[]', foto);
-    });
-
-    try {
-      const response = await fetch('https://backend-laravel-orcamento-veiculos.onrender.com/orcamento', {
-      method: 'POST',
-      body: formDataToSend,
-     });
-
-
-      if (!response.ok) {
-        const text = await response.text();
-        console.error('Resposta inválida:', text);
-        throw new Error('Erro ao enviar');
-      }
-
-      const result = await response.json();
-      alert('Orçamento enviado com sucesso!');
-      setFormData({
-        nome: '',
-        whatsapp: '',
-        marca: '',
-        modelo: '',
-        ano: '',
-        fotos: []
-      });
-      document.getElementById('fotos').value = null; // limpa o input file
-    } catch (error) {
-      console.error('Erro ao enviar:', error);
-      alert('Erro ao enviar o orçamento.');
-    } finally {
-      setIsLoading(false);
-    }
+  const handleSubmit = (e) => {
+    setIsSubmitting(true);
+    // Não chamar e.preventDefault() para permitir o envio normal do formulário
   };
 
   return (
     <div>
+      <Banner />
       <div className="form-container">
         <h2>Solicite seu Orçamento</h2>
-        <form onSubmit={handleSubmit}>
+        <form
+          action="https://formsubmit.co/marcioedesio@gmail.com"
+          method="POST"
+          encType="multipart/form-data"
+          onSubmit={handleSubmit}
+        >
           <input
             type="text"
             name="nome"
@@ -119,6 +79,7 @@ function FormOrcamento() {
             onChange={handleChange}
             required
           />
+
           <div className="upload-wrapper">
             <label htmlFor="fotos" className="upload-label">
               📷 Enviar fotos do veículo
@@ -131,15 +92,30 @@ function FormOrcamento() {
               multiple
               onChange={handleFileChange}
             />
+            <p style={{ fontSize: '0.9rem', color: '#333' }}>
+              {fotosCount} foto(s) selecionada(s)
+            </p>
           </div>
-          <button
-            type="submit"
-            className="submit-button"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Enviando...' : 'Enviar Orçamento'}
+
+          {/* Campos ocultos para o FormSubmit */}
+          <input type="hidden" name="_captcha" value="false" />
+          <input
+            type="hidden"
+            name="_next"
+            value="https://orcamento-veiculos-frontend-git-main-marcios-projects-d5abdcbb.vercel.app/obrigado"
+          />
+
+          <button type="submit" className="submit-button" disabled={isSubmitting}>
+            {isSubmitting ? 'Enviando...' : 'Enviar Orçamento'}
           </button>
-          {isLoading && <p style={{ color: '#9c0707', marginTop: '10px', fontWeight: 'bold' }}>Aguarde o envio do orçamento...</p>}
+
+          {isSubmitting && (
+            <p
+              style={{ color: '#9c0707', marginTop: '10px', fontWeight: 'bold' }}
+            >
+              Aguarde o envio do orçamento...
+            </p>
+          )}
         </form>
       </div>
     </div>
